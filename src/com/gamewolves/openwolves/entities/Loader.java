@@ -1,6 +1,7 @@
 package com.gamewolves.openwolves.entities;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,25 @@ public class Loader {
 	public static int loadVAO(float[] vertices) {
 		int vaoID = createVAO();
 		
-		storeVBO(0, vertices);
+		storeVertexData(0, vertices);
+		unbindVAO();
+		
+		return vaoID;
+	}
+	
+	/**
+	 * Creates a VAO holding the values:
+	 * 	1. Vertices
+	 *  2. Indices
+	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
+	 * @param indices Indices as an integer array
+	 * @return the Index of the VAO
+	 */
+	public static int loadVAO(float[] vertices, int[] indices) {
+		int vaoID = createVAO();
+		
+		storeIndexData(indices);
+		storeVertexData(0, vertices);
 		unbindVAO();
 		
 		return vaoID;
@@ -46,7 +65,7 @@ public class Loader {
 	 * @param attribListID The ID of the VBO
 	 * @param data The data to store as a float array
 	 */
-	private static void storeVBO(int attribListID, float[] data) {
+	private static void storeVertexData(int attribListID, float[] data) {
 		int vboID = GL15.glGenBuffers();
 		vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
@@ -54,6 +73,18 @@ public class Loader {
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(attribListID, 3, GL11.GL_FLOAT, false, 0, 0);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	}
+	
+	/**
+	 * Creates a VBO for indices
+	 * @param indices The indices for the VBO
+	 */
+	private static void storeIndexData(int[] indices) {
+		int vboID = GL15.glGenBuffers();
+		vbos.add(vboID);
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
+		IntBuffer buffer = createIntBuffer(indices);
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 	}
 	
 	/**
@@ -70,6 +101,18 @@ public class Loader {
 	 */
 	private static FloatBuffer createFloatBuffer(float[] data) {
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
+		buffer.put(data);
+		buffer.flip();
+		return buffer;
+	}
+	
+	/**
+	 * Creates a IntBuffer for the VBO of an integer array
+	 * @param data The integer array to convert
+	 * @return The created IntBuffer
+	 */
+	private static IntBuffer createIntBuffer(int[] data) {
+		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();
 		return buffer;

@@ -11,15 +11,12 @@ public class Maths {
 	 * @return The rectangles vertices
 	 */
 	public static Vector3f[] calculateRectangleVertices(float width, float height) {
-		Vector3f[] vertices = new Vector3f[6];
+		Vector3f[] vertices = new Vector3f[4];
 		
-		vertices[0] = new Vector3f(-1 * width, -1 * height, 0);
-		vertices[1] = new Vector3f(-1 * width,      height, 0);
-		vertices[2] = new Vector3f(     width,      height, 0);
-		
-		vertices[3] = new Vector3f(-1 * width, -1 * height, 0);
-		vertices[4] = new Vector3f(     width,      height, 0);
-		vertices[5] = new Vector3f(     width, -1 * height, 0);
+		vertices[0] = new Vector3f(-1 * width,      height, 0);
+		vertices[1] = new Vector3f(-1 * width, -1 * height, 0);
+		vertices[2] = new Vector3f(     width, -1 * height, 0);
+		vertices[3] = new Vector3f(     width,      height, 0);
 		
 		return vertices;
 	}

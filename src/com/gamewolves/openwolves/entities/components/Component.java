@@ -87,4 +87,11 @@ public abstract class Component {
 			return components;
 		}
 	}
+	
+	public static <T extends Component> void deleteComponent(UUID entity, Class<T> component) {
+		synchronized (components) {
+			HashMap<UUID, ? extends Component> store = components.get(component);
+			store.remove(entity);
+		}
+	}
 }
