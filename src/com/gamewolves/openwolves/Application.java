@@ -1,5 +1,6 @@
 package com.gamewolves.openwolves;
 
+import org.joml.Vector2f;
 import org.lwjgl.opengl.GL11;
 
 import com.gamewolves.openwolves.core.OpenWolvesApplication;
@@ -16,7 +17,8 @@ public class Application extends OpenWolvesApplication {
 		
 		rect1 = new Rectangle(0.5f, 0.5f);
 		rect1.addTexture("res/smiley.png");
-		shader = new Shader("res/shaders/basicShader/vertex.vert", null, "res/shaders/basicShader/fragment.frag", new String[] { "position", "uvCoords" });
+		rect1.addUVCoords(new float[] { 0, 0, 0, 1, 1, 1, 1, 0 });
+		shader = new Shader("res/shaders/basicShader/vertex.vert", null, "res/shaders/basicShader/fragment.frag", new String[] { "position", "uvCoords" }, new Shader.UniformVariable[] { new Shader.UniformVariable("transformationMatrix") });
 		
 		super.update();
 		super.delete();
@@ -28,7 +30,18 @@ public class Application extends OpenWolvesApplication {
 		GL11.glClearColor(0.3f, 0.5f, 0.7f, 1.0f);
 		
 		shader.start();
-		rect1.render();
+		rect1.transform.setRotation(0);
+		rect1.transform.setPosition(new Vector2f(-1, 1));
+		rect1.render(shader);
+		rect1.transform.setPosition(new Vector2f(1, 1));
+		rect1.render(shader);
+		rect1.transform.setPosition(new Vector2f(1, -1));
+		rect1.render(shader);
+		rect1.transform.setPosition(new Vector2f(-1, -1));
+		rect1.render(shader);
+		rect1.transform.setPosition(new Vector2f(0, 0));
+		rect1.transform.setRotation((-System.currentTimeMillis() / 10) % 360);
+		rect1.render(shader);
 		shader.stop();
 	}
 

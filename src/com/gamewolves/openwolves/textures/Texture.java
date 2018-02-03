@@ -109,11 +109,18 @@ public class Texture {
 		return height;
 	}
 	
+	/**
+	 * Deletes the texture
+	 */
 	public void delete() {
 		GL11.glDeleteTextures(texture);
 		textures.remove(texture);
 	}
 
+	/**
+	 * Returns the list of all textures
+	 * @return List of textures
+	 */
 	public static List<Integer> getTextures() {
 		return textures;
 	}

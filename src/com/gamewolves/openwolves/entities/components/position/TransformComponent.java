@@ -14,7 +14,7 @@ public class TransformComponent extends Component {
 		Component.addComponent(entity, this);	
 		position = new Vector3f();
 		rotation = new Vector3f();
-		scale = new Vector3f();
+		scale = new Vector3f(1, 1, 1);
 	}
 
 	@Override

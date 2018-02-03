@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
+
 import com.gamewolves.openwolves.entities.components.Component;
+import com.gamewolves.openwolves.entities.components.texture.TextureComponent;
 
 public abstract class Entity {
 	
@@ -12,6 +17,8 @@ public abstract class Entity {
 	
 	protected int vaoID;
 	protected UUID ID;
+	
+	public boolean usesTexture = false;
 	
 	private ArrayList<Component> components;
 
@@ -26,6 +33,16 @@ public abstract class Entity {
 	 */
 	protected void setVAO_ID(int vaoID) {
 		this.vaoID = vaoID;
+	}
+	
+	protected void loadTexture() {
+		GL20.glEnableVertexAttribArray(1);
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getComponent(TextureComponent.class).getTexture().getTextureID());
+	}
+	
+	protected void unloadTexture() {
+		GL20.glDisableVertexAttribArray(1);
 	}
 	
 	/**

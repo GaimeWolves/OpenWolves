@@ -2,8 +2,8 @@ package com.gamewolves.openwolves.entities;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -15,8 +15,10 @@ import com.gamewolves.openwolves.textures.Texture;
 
 public class Loader {
 	
-	private static List<Integer> vaos = new ArrayList<Integer>();
-	private static List<Integer> vbos = new ArrayList<Integer>();
+	/**
+	 * HashMap of every VAO and its corresponding VBOs
+	 */
+	private static HashMap<Integer, Integer> models = new HashMap<>();
 
 	/**
 	 * Creates a VAO holding the values:
@@ -27,7 +29,7 @@ public class Loader {
 	public static int loadVAO(float[] vertices) {
 		int vaoID = createVAO();
 		
-		storeDataInVBO(0, vertices, 3);
+		storeDataInVBO(0, vertices, 3, vaoID);
 		unbindVAO();
 		
 		return vaoID;
@@ -44,8 +46,8 @@ public class Loader {
 	public static int loadVAO(float[] vertices, int[] indices) {
 		int vaoID = createVAO();
 		
-		storeIndexData(indices);
-		storeDataInVBO(0, vertices, 3);
+		storeIndexData(indices, vaoID);
+		storeDataInVBO(0, vertices, 3, vaoID);
 		unbindVAO();
 		
 		return vaoID;
@@ -63,9 +65,9 @@ public class Loader {
 	public static int loadVAO(float[] vertices, int[] indices, float[] uvCoords) {
 		int vaoID = createVAO();
 		
-		storeIndexData(indices);
-		storeDataInVBO(0, vertices, 3);
-		storeDataInVBO(1, uvCoords, 2);
+		storeIndexData(indices, vaoID);
+		storeDataInVBO(0, vertices, 3, vaoID);
+		storeDataInVBO(1, uvCoords, 2, vaoID);
 		
 		unbindVAO();
 		
@@ -78,7 +80,6 @@ public class Loader {
 	 */
 	private static int createVAO() {
 		int vaoID = GL30.glGenVertexArrays();
-		vaos.add(vaoID);
 		GL30.glBindVertexArray(vaoID);
 		return vaoID;
 	}
@@ -89,9 +90,9 @@ public class Loader {
 	 * @param data The data to store as a float array
 	 * @param coordinateSize The size of each coordinate in the data
 	 */
-	private static void storeDataInVBO(int attribListID, float[] data, int coordinateSize) {
+	private static void storeDataInVBO(int attribListID, float[] data, int coordinateSize, int vaoID) {
 		int vboID = GL15.glGenBuffers();
-		vbos.add(vboID);
+		models.put(vaoID, vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 		FloatBuffer buffer = createFloatBuffer(data);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
@@ -103,9 +104,9 @@ public class Loader {
 	 * Creates a VBO for indices
 	 * @param indices The indices for the VBO
 	 */
-	private static void storeIndexData(int[] indices) {
+	private static void storeIndexData(int[] indices, int vaoID) {
 		int vboID = GL15.glGenBuffers();
-		vbos.add(vboID);
+		models.put(vaoID, vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 		IntBuffer buffer = createIntBuffer(indices);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
@@ -142,16 +143,26 @@ public class Loader {
 		return buffer;
 	}
 	
+	public static void deleteVAO(int vaoID) {
+		for (Entry<Integer, Integer> model : models.entrySet()) {
+			if (model.getKey() == vaoID) {
+				GL15.glDeleteBuffers(model.getValue());
+				models.remove(model.getKey(), model.getValue());
+				GL30.glDeleteVertexArrays(model.getKey());
+			}
+		}
+		models.remove(vaoID);
+	}
+	
 	/**
 	 * Deletes every VAO and VBO
 	 */
 	public static void delete() {
-		for (int vao : vaos) {
-			GL30.glDeleteVertexArrays(vao);
+		for (Entry<Integer, Integer> model : models.entrySet()) {
+			GL15.glDeleteBuffers(model.getValue());
+			GL30.glDeleteVertexArrays(model.getKey());
 		}
-		for (int vbo : vbos) {
-			GL15.glDeleteBuffers(vbo);
-		}
+		models.clear();
 		for (int texture : Texture.getTextures()) {
 			GL11.glDeleteTextures(texture);
 		}
