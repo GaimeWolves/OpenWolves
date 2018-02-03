@@ -12,7 +12,8 @@ public abstract class Entity {
 	
 	protected int vaoID;
 	protected UUID ID;
-	protected ArrayList<Component> components;
+	
+	private ArrayList<Component> components;
 
 	public Entity() {
 		ID = UUID.randomUUID();
@@ -27,11 +28,52 @@ public abstract class Entity {
 		this.vaoID = vaoID;
 	}
 	
+	/**
+	 * Deletes the entity
+	 */
 	public void delete() {
 		for (int i = 0; i < components.size(); i++) {
 			Component.deleteComponent(ID, components.get(i).getClass());
 		}
 		components.clear();
+		removeEntity(ID);
+	}
+	
+	/**
+	 * Adds a component to the ArrayList of components (deletes the old one if it has one)
+	 * @param component The component to add
+	 */
+	public <T extends Component> void addComponent(T component) {
+		if (getComponent(component.getClass()) != null)
+			deleteComponent(component.getClass());
+		components.add(component);
+	}
+	
+	/**
+	 * Gets a component from the ArrayList of components (returns null if none found)
+	 * @param component The component to search
+	 * @return The found component
+	 */
+	public <T extends Component> T getComponent(Class<T> component) {
+		for (T currentComponent : (ArrayList<T>)components) {
+			if (currentComponent.getClass() == component) return currentComponent; 
+		}
+		return null;
+	}
+	
+	/**
+	 * Deletes a component of the entity
+	 * @param component the component to delete
+	 */
+	public <T extends Component> void deleteComponent(Class<T> component) {
+		for (T currentComponent : (ArrayList<T>)components) {
+			if (currentComponent.getClass() == component) {
+				currentComponent.delete();
+				Component.deleteComponent(ID, component);
+				components.remove(currentComponent);
+				return;
+			}
+		}
 	}
 	
 	/**

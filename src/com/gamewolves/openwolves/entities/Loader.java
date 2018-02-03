@@ -11,6 +11,8 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import com.gamewolves.openwolves.textures.Texture;
+
 public class Loader {
 	
 	private static List<Integer> vaos = new ArrayList<Integer>();
@@ -25,7 +27,7 @@ public class Loader {
 	public static int loadVAO(float[] vertices) {
 		int vaoID = createVAO();
 		
-		storeVertexData(0, vertices);
+		storeDataInVBO(0, vertices, 3);
 		unbindVAO();
 		
 		return vaoID;
@@ -43,7 +45,28 @@ public class Loader {
 		int vaoID = createVAO();
 		
 		storeIndexData(indices);
-		storeVertexData(0, vertices);
+		storeDataInVBO(0, vertices, 3);
+		unbindVAO();
+		
+		return vaoID;
+	}
+	
+	/**
+	 * Creates a VAO holding the values:
+	 * 	1. Vertices
+	 *  2. Indices
+	 *  3. Texture coordinates
+	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
+	 * @param indices Indices as an integer array
+	 * @return the Index of the VAO
+	 */
+	public static int loadVAO(float[] vertices, int[] indices, float[] uvCoords) {
+		int vaoID = createVAO();
+		
+		storeIndexData(indices);
+		storeDataInVBO(0, vertices, 3);
+		storeDataInVBO(1, uvCoords, 2);
+		
 		unbindVAO();
 		
 		return vaoID;
@@ -61,17 +84,18 @@ public class Loader {
 	}
 	
 	/**
-	 * Stores a float array as 3D vectors into a VBO
+	 * Stores a float array into a VBO
 	 * @param attribListID The ID of the VBO
 	 * @param data The data to store as a float array
+	 * @param coordinateSize The size of each coordinate in the data
 	 */
-	private static void storeVertexData(int attribListID, float[] data) {
+	private static void storeDataInVBO(int attribListID, float[] data, int coordinateSize) {
 		int vboID = GL15.glGenBuffers();
 		vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 		FloatBuffer buffer = createFloatBuffer(data);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(attribListID, 3, GL11.GL_FLOAT, false, 0, 0);
+		GL20.glVertexAttribPointer(attribListID, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 	
@@ -118,12 +142,18 @@ public class Loader {
 		return buffer;
 	}
 	
+	/**
+	 * Deletes every VAO and VBO
+	 */
 	public static void delete() {
 		for (int vao : vaos) {
 			GL30.glDeleteVertexArrays(vao);
 		}
 		for (int vbo : vbos) {
 			GL15.glDeleteBuffers(vbo);
+		}
+		for (int texture : Texture.getTextures()) {
+			GL11.glDeleteTextures(texture);
 		}
 	}
 }

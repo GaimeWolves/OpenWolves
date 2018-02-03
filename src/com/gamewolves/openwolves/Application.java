@@ -8,20 +8,16 @@ import com.gamewolves.openwolves.shaders.Shader;
 
 public class Application extends OpenWolvesApplication {
 	
-	Rectangle rect;
+	Rectangle rect1;
 	Shader shader;
-
-	public Application() {
-		super();
-	}
 	
 	public void init(int width, int height, boolean resizable, String title) {
 		super.init(this, width, height, resizable, title);
 		
-		rect = new Rectangle(0.5f, 0.5f);
-		shader = new Shader("res/shaders/basicShader/vertex.vert", null, "res/shaders/basicShader/fragment.frag", new String[] { "position" });
+		rect1 = new Rectangle(0.5f, 0.5f);
+		rect1.addTexture("res/smiley.png");
+		shader = new Shader("res/shaders/basicShader/vertex.vert", null, "res/shaders/basicShader/fragment.frag", new String[] { "position", "uvCoords" });
 		
-		//CHANGE THIS SOMEHOW
 		super.update();
 		super.delete();
 	}
@@ -32,7 +28,7 @@ public class Application extends OpenWolvesApplication {
 		GL11.glClearColor(0.3f, 0.5f, 0.7f, 1.0f);
 		
 		shader.start();
-		rect.render();
+		rect1.render();
 		shader.stop();
 	}
 

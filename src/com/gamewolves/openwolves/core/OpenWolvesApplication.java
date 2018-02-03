@@ -15,13 +15,9 @@ import com.gamewolves.openwolves.entities.Loader;
 import com.gamewolves.openwolves.entities.components.Component;
 import com.gamewolves.openwolves.gl.Display;
 
-public class OpenWolvesApplication {
+public abstract class OpenWolvesApplication {
 	
 	private static Application m_instance;
-
-	public OpenWolvesApplication() {
-		
-	}
 	
 	public void init(Application instance, int width, int height, boolean resizable, String title) {
 		m_instance = instance;
@@ -36,28 +32,42 @@ public class OpenWolvesApplication {
 			GLFW.glfwPollEvents();
 			Display.updateDeltaTime();
 			
-			for(Entry<Class, HashMap<UUID, ? extends Component>> hashmap : Component.getComponents().entrySet()) { 
-				for(Entry<UUID, ? extends Component> component : hashmap.getValue().entrySet()) {
-					component.getValue().update();
-				}
-			}
+			componentsUpdate();
 			
 			//rendering
 			m_instance.update();
 			
-			for(Entry<Class, HashMap<UUID, ? extends Component>> hashmap : Component.getComponents().entrySet()) { 
-				for(Entry<UUID, ? extends Component> component : hashmap.getValue().entrySet()) {
-					component.getValue().lateUpdate();
-				}
-			}
-			
-			
+			componentslateUpdate();
+						
 			Display.updateDisplay();
+		}
+	}
+	
+	/**
+	 * Calls the update function of every component
+	 */
+	public void componentsUpdate() {
+		for(Entry<Class, HashMap<UUID, ? extends Component>> hashmap : Component.getComponents().entrySet()) { 
+			for(Entry<UUID, ? extends Component> component : hashmap.getValue().entrySet()) {
+				component.getValue().update();
+			}
+		}
+	}
+	
+	/**
+	 * Calls the late update function of every component
+	 */
+	public void componentslateUpdate() {
+		for(Entry<Class, HashMap<UUID, ? extends Component>> hashmap : Component.getComponents().entrySet()) { 
+			for(Entry<UUID, ? extends Component> component : hashmap.getValue().entrySet()) {
+				component.getValue().lateUpdate();
+			}
 		}
 	}
 	
 	public void delete() {
 		m_instance.delete();
+		Component.deleteComponents();
 		Loader.delete();
 		Display.closeDisplay();
 	}

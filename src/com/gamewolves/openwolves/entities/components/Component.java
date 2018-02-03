@@ -16,14 +16,14 @@ public abstract class Component {
 	public abstract void update();
 	
 	/**
-	 * Delete called when deleting the Component
-	 */
-	public abstract void delete();
-	
-	/**
 	 * Called after rendering
 	 */
 	public abstract void lateUpdate();
+	
+	/**
+	 * Delete called when deleting the Component
+	 */
+	public abstract void delete();
 	
 	/**
 	 * Adds a component to an entity
@@ -88,10 +88,22 @@ public abstract class Component {
 		}
 	}
 	
+	/**
+	 * Removes a component from the components HasMap
+	 * @param entity The UUID of the entity holding the component
+	 * @param component The component to delete
+	 */
 	public static <T extends Component> void deleteComponent(UUID entity, Class<T> component) {
 		synchronized (components) {
 			HashMap<UUID, ? extends Component> store = components.get(component);
 			store.remove(entity);
 		}
+	}
+	
+	/**
+	 * Clears the HashMap of components
+	 */
+	public static void deleteComponents() {
+		components.clear();
 	}
 }
