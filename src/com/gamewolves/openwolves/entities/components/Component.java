@@ -5,6 +5,10 @@ import java.util.UUID;
 
 public abstract class Component {
 	
+	public Component(UUID entity) {
+		Component.addComponent(entity, this);
+	}
+	
 	/**
 	 * A map of all Components and their respective Class and Entity
 	 */

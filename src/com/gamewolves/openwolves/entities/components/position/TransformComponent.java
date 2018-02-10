@@ -2,16 +2,18 @@ package com.gamewolves.openwolves.entities.components.position;
 
 import java.util.UUID;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import com.gamewolves.openwolves.entities.components.Component;
+import com.gamewolves.openwolves.util.math.Maths;
 
 public class TransformComponent extends Component {
 	
 	public Vector3f position, rotation, scale;
 
 	public TransformComponent(UUID entity) {
-		Component.addComponent(entity, this);	
+		super(entity);	
 		position = new Vector3f();
 		rotation = new Vector3f();
 		scale = new Vector3f(1, 1, 1);
@@ -70,5 +72,10 @@ public class TransformComponent extends Component {
 
 	public void setScale(Vector3f scale) {
 		this.scale = scale;
+	}
+	
+	public Matrix4f getTransformationMatrix() {
+		Vector3f _rotation = new Vector3f(rotation).mul(Maths.DEGREES_TO_RADIANS);
+		return Maths.createTransformationMatrix(position, _rotation, scale);
 	}
 }

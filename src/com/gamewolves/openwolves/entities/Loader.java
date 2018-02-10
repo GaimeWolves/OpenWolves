@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.gamewolves.openwolves.textures.Texture;
+import com.gamewolves.openwolves.materials.textures.Texture;
 
 public class Loader {
 	
@@ -26,7 +26,7 @@ public class Loader {
 	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
 	 * @return the Index of the VAO
 	 */
-	public static int loadVAO(float[] vertices) {
+	public static int loadVAO_V(float[] vertices) {
 		int vaoID = createVAO();
 		
 		storeDataInVBO(0, vertices, 3, vaoID);
@@ -43,7 +43,7 @@ public class Loader {
 	 * @param indices Indices as an integer array
 	 * @return the Index of the VAO
 	 */
-	public static int loadVAO(float[] vertices, int[] indices) {
+	public static int loadVAO_VI(float[] vertices, int[] indices) {
 		int vaoID = createVAO();
 		
 		storeIndexData(indices, vaoID);
@@ -60,14 +60,62 @@ public class Loader {
 	 *  3. Texture coordinates
 	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
 	 * @param indices Indices as an integer array
+	 * @param uvCoords UV coordinates as a float array
 	 * @return the Index of the VAO
 	 */
-	public static int loadVAO(float[] vertices, int[] indices, float[] uvCoords) {
+	public static int loadVAO_VIT(float[] vertices, int[] indices, float[] uvCoords) {
 		int vaoID = createVAO();
 		
 		storeIndexData(indices, vaoID);
 		storeDataInVBO(0, vertices, 3, vaoID);
 		storeDataInVBO(1, uvCoords, 2, vaoID);
+		
+		unbindVAO();
+		
+		return vaoID;
+	}
+	
+	/**
+	 * Creates a VAO holding the values:
+	 * 	1. Vertices
+	 *  2. Indices
+	 *  3. Texture coordinates
+	 *  4. Normals
+	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
+	 * @param indices Indices as an integer array
+	 * @param uvCoords UV coordinates as a float array
+	 * @param normals Normals as a float array
+	 * @return the Index of the VAO
+	 */
+	public static int loadVAO_VITN(float[] vertices, int[] indices, float[] uvCoords, float[] normals) {
+		int vaoID = createVAO();
+		
+		storeIndexData(indices, vaoID);
+		storeDataInVBO(0, vertices, 3, vaoID);
+		storeDataInVBO(1, uvCoords, 2, vaoID);
+		storeDataInVBO(2, normals, 3, vaoID);
+		
+		unbindVAO();
+		
+		return vaoID;
+	}
+	
+	/**
+	 * Creates a VAO holding the values:
+	 * 	1. Vertices
+	 *  2. Indices
+	 *  3. Normals
+	 * @param vertices Vertices as a float array { x1, y1, z1, x2, y2, ... }
+	 * @param indices Indices as an integer array
+	 * @param normals Normals as a float array
+	 * @return the Index of the VAO
+	 */
+	public static int loadVAO_VIN(float[] vertices, int[] indices, float[] normals) {
+		int vaoID = createVAO();
+		
+		storeIndexData(indices, vaoID);
+		storeDataInVBO(0, vertices, 3, vaoID);
+		storeDataInVBO(2, normals, 3, vaoID);
 		
 		unbindVAO();
 		

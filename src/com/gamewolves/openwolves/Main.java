@@ -2,11 +2,11 @@ package com.gamewolves.openwolves;
 
 public class Main {
 	
-	private static Application application;
+	private static DesktopApplication desktopApplication;
 
 	public static void main(String[] args) {
-		application = new Application();
-		application.init(1280, 720, false, "OpenWolvesTest");
+		desktopApplication = new DesktopApplication();
+		desktopApplication.init(1280, 720, false, "OpenWolvesTest");
 	}
 
 }

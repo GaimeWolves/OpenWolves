@@ -1,5 +1,7 @@
 package com.gamewolves.openwolves.util.conversion;
 
+import java.util.ArrayList;
+
 import org.joml.Vector3f;
 
 public class Convertor {
@@ -19,5 +21,39 @@ public class Convertor {
 		}
 		
 		return values;
+	}
+	
+	/**
+	 * Combines a list of arrays into one array
+	 * @param arrays The list of arrays
+	 * @return The combined array
+	 */
+	public static float[] combineFloatArrays(ArrayList<float[]> arrays) {
+		int size = 0;
+		for (int i = 0; i < arrays.size(); i++) {
+			size += arrays.get(i).length;
+		}
+		float[] combinedArray = new float[size];
+		int currentIndex = 0;
+		for (int i = 0; i < arrays.size(); i++) {
+			for (int j = 0; j < arrays.get(i).length; j++) {
+				combinedArray[currentIndex++] = arrays.get(i)[j];
+			}
+		}
+		return combinedArray;
+	}
+	
+	/**
+	 * Combines multiple instances of one array into a combined array 
+	 * @param array The array to multiply
+	 * @param times The amount to multiply
+	 * @return The multiplied array
+	 */
+	public static float[] multiplyArray(float[] array, int times) {
+		ArrayList<float[]> list = new ArrayList<>();
+		for (int i = 0; i < times; i++) {
+			list.add(array);
+		}
+		return combineFloatArrays(list);
 	}
 }

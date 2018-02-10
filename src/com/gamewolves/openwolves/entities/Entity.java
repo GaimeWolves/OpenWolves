@@ -4,45 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-
 import com.gamewolves.openwolves.entities.components.Component;
-import com.gamewolves.openwolves.entities.components.texture.TextureComponent;
 
 public abstract class Entity {
 	
 	private static HashMap<UUID, ? extends Entity> entities = new HashMap<>();
 	
-	protected int vaoID;
 	protected UUID ID;
-	
-	public boolean usesTexture = false;
 	
 	private ArrayList<Component> components;
 
 	public Entity() {
 		ID = UUID.randomUUID();
+		addEntity(ID, this);
 		components = new ArrayList<>();
-	}
-
-	/**
-	 * Sets the VAO ID of the entities model
-	 * @param vaoID
-	 */
-	protected void setVAO_ID(int vaoID) {
-		this.vaoID = vaoID;
-	}
-	
-	protected void loadTexture() {
-		GL20.glEnableVertexAttribArray(1);
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getComponent(TextureComponent.class).getTexture().getTextureID());
-	}
-	
-	protected void unloadTexture() {
-		GL20.glDisableVertexAttribArray(1);
 	}
 	
 	/**
@@ -56,6 +31,10 @@ public abstract class Entity {
 		removeEntity(ID);
 	}
 	
+	public UUID getID() {
+		return ID;
+	}
+
 	/**
 	 * Adds a component to the ArrayList of components (deletes the old one if it has one)
 	 * @param component The component to add
@@ -112,5 +91,9 @@ public abstract class Entity {
 		synchronized (entities) {
 			entities.remove(ID);
 		}
+	}
+	
+	public static HashMap<UUID, ? extends Entity> getEntities() {
+		return entities;
 	}
 }

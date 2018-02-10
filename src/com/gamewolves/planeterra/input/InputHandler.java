@@ -5,23 +5,17 @@ import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
-import com.gamewolves.planeterra.player.Camera;
-import com.gamewolves.planeterra.render.Display;
+import com.gamewolves.openwolves.gl.Display;
 
 public class InputHandler{
 	
 	public static MouseRayCaster rayCaster;
 	
 	public static void init() {
-		glfwSetKeyCallback(Display.window, new KeyboardHandler());
-		glfwSetScrollCallback(Display.window, new ScrollHandler());
-	}
-	
-	public static void initRayCaster(Camera cam, Matrix4f projectionMatrix) {
-		rayCaster = new MouseRayCaster(cam, projectionMatrix);
+		glfwSetKeyCallback(Display.getWindow(), new KeyboardHandler());
+		glfwSetScrollCallback(Display.getWindow(), new ScrollHandler());
 	}
 	
 	public static void update() {
@@ -39,11 +33,11 @@ public class InputHandler{
 	}
 	
 	public static boolean isButtonDown(int keyCode) {
-		return glfwGetMouseButton(Display.window, keyCode) == GLFW_PRESS;
+		return glfwGetMouseButton(Display.getWindow(), keyCode) == GLFW_PRESS;
 	}
 	
 	public static boolean isButtonUp(int keyCode) {
-		return glfwGetMouseButton(Display.window, keyCode) != GLFW_PRESS;
+		return glfwGetMouseButton(Display.getWindow(), keyCode) != GLFW_PRESS;
 	}
 	
 	public static Vector2f getDeltaPosition() {

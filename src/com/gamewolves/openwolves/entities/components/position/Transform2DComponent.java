@@ -15,7 +15,7 @@ public class Transform2DComponent extends Component {
 	public float rotation;
 
 	public Transform2DComponent(UUID entity) {
-		Component.addComponent(entity, this);	
+		super(entity);
 		position = new Vector2f();
 		rotation = 0;
 		scale = new Vector2f(1, 1);
