@@ -4,12 +4,14 @@ import com.gamewolves.openwolves.entities.Entity;
 import com.gamewolves.openwolves.entities.components.drawing.MeshComponent;
 import com.gamewolves.openwolves.entities.components.position.TransformComponent;
 
-public class Model extends Entity {
+public class Model extends Entity
+{
 	
 	public MeshComponent mesh;
 	public TransformComponent transform;
-
-	public Model() {
+	
+	public Model()
+	{
 		super();
 		transform = new TransformComponent(ID);
 		mesh = new MeshComponent(ID);
@@ -18,7 +20,8 @@ public class Model extends Entity {
 	}
 	
 	@Override
-	public void delete() {
+	public void delete()
+	{
 		
 	}
 }

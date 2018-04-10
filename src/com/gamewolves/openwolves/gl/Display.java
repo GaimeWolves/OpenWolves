@@ -31,73 +31,84 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
-public class Display {
+public class Display
+{
 	
 	private static int WIDTH, HEIGHT;
 	private static long window;
 	private static float ASPECT_RATIO;
 	private static long lastFrameTime;
 	private static float deltaTime;
-
-	public static void createDisplay(int width, int height, boolean resizable, String title) {
+	
+	/**
+	 * Creates the window
+	 * 
+	 * @param width The width of the window
+	 * @param height The height of the window
+	 * @param resizable Makes the window resizable
+	 * @param title The title of the window
+	 */
+	public static void createDisplay(int width, int height, boolean resizable, String title)
+	{
 		WIDTH = width;
-		HEIGHT = height;	
-		ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
+		HEIGHT = height;
+		ASPECT_RATIO = (float) WIDTH / (float) HEIGHT;
 		
 		lastFrameTime = getCurrentTime();
 		GLFWErrorCallback.createPrint(System.err).set();
-
-		if ( !glfwInit() )
+		
+		if (!glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
-
+		
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		
 		if (resizable)
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		else 
+		else
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		
 		glfwWindowHint(GLFW_SAMPLES, 8);
-
+		
 		window = glfwCreateWindow(WIDTH, HEIGHT, title, 0, 0);
-		if ( window == 0 )
+		if (window == 0)
 			throw new RuntimeException("Failed to create the GLFW window");
-
-		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+		
+		glfwSetKeyCallback(window, (window, key, scancode, action, mods) ->
+		{
+			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true);
 		});
-
-		try ( MemoryStack stack = stackPush() ) {
+		
+		try (MemoryStack stack = stackPush())
+		{
 			IntBuffer pWidth = stack.mallocInt(1);
 			IntBuffer pHeight = stack.mallocInt(1);
-
+			
 			glfwGetWindowSize(window, pWidth, pHeight);
-
+			
 			GLFWVidMode videomode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-			glfwSetWindowPos(
-				window,
-				(videomode.width() - pWidth.get(0)) / 2,
-				(videomode.height() - pHeight.get(0)) / 2
-			);
+			
+			glfwSetWindowPos(window, (videomode.width() - pWidth.get(0)) / 2,
+					(videomode.height() - pHeight.get(0)) / 2);
 		}
 		
-		glfwShowWindow(window);	
+		glfwShowWindow(window);
 	}
 	
 	/**
 	 * Updates the Display
 	 */
-	public static void updateDisplay() {
-		glfwSwapBuffers(window);	
+	public static void updateDisplay()
+	{
+		glfwSwapBuffers(window);
 	}
 	
 	/**
 	 * Updates the DeltaTime
 	 */
-	public static void updateDeltaTime() {
+	public static void updateDeltaTime()
+	{
 		long currentTime = getCurrentTime();
 		deltaTime = (currentTime - lastFrameTime) / 1000.f;
 		lastFrameTime = currentTime;
@@ -106,26 +117,30 @@ public class Display {
 	/**
 	 * Closes the Window
 	 */
-	public static void closeDisplay() {
+	public static void closeDisplay()
+	{
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
-
+		
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
 	
 	/**
 	 * Gets the current time in milliseconds
+	 * 
 	 * @return Current time in milliseconds
 	 */
-	public static long getCurrentTime() {
-		return (long)(System.nanoTime() / 1000000.f);
+	public static long getCurrentTime()
+	{
+		return (long) (System.nanoTime() / 1000000.f);
 	}
 	
 	/**
 	 * @return Time between frames
 	 */
-	public static float getDeltaTimeInSeconds() {
+	public static float getDeltaTimeInSeconds()
+	{
 		return deltaTime;
 	}
 	
@@ -133,14 +148,16 @@ public class Display {
 	 * @return Aspect Ratio
 	 * @return
 	 */
-	public static float getAspectRatio() {
+	public static float getAspectRatio()
+	{
 		return ASPECT_RATIO;
 	}
-
+	
 	/**
 	 * @return The GFLW Window
 	 */
-	public static long getWindow() {
+	public static long getWindow()
+	{
 		return window;
 	}
 }

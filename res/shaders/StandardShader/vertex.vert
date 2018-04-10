@@ -1,21 +1,21 @@
 #version 400 core
 
-in vec3 position;
-in vec3 normal;
+layout (location = 0) in vec3 position;
+layout (location = 2) in vec3 normal;
 
 out vec3 surfaceNormal;
-out vec3 toLightVector;
+out vec3 worldPosition;
 
-uniform mat4 transformationMatrix;
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-uniform vec3 lightPosition;
+uniform mat4 Model;
+uniform mat4 Projection;
+uniform mat4 View;
+uniform mat4 IT_Model;
 
 void main(void){
 
-	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-	gl_Position = projectionMatrix * viewMatrix * worldPosition;
+	vec4 worldPos = Model * vec4(position, 1.0);
+	worldPosition = worldPos.xyz;
+	gl_Position = Projection * View * worldPos;
 
-	surfaceNormal = (transformationMatrix * vec4(normal, 0.0)).xyz;
-	toLightVector = lightPosition - worldPosition.xyz;
+	surfaceNormal = (IT_Model * vec4(normal, 0.0)).xyz;
 }

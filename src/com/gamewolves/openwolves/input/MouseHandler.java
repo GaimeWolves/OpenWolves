@@ -10,8 +10,9 @@ import org.lwjgl.BufferUtils;
 
 import com.gamewolves.openwolves.gl.Display;
 
-class MouseHandler {
-
+class MouseHandler
+{
+	
 	private static float nx = 0, ny = 0, lx = 0, ly = 0, dx = 0, dy = 0;
 	
 	private static boolean mouseLocked = false;
@@ -20,74 +21,85 @@ class MouseHandler {
 	/**
 	 * Calculates the delta for the position
 	 */
-	static void update() {
-        DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
-        DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+	static void update()
+	{
+		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
 		
-		if (!mouseLocked) {
+		if (!mouseLocked)
+		{
 			glfwGetCursorPos(Display.getWindow(), x, y);
 			x.rewind();
 			y.rewind();
-
+			
 			nx = (float) x.get();
 			ny = (float) y.get();
-        
+			
 			dx = nx - lx;
 			dy = ny - ly;
-		
+			
 			lx = nx;
 			ly = ny;
-		} else {
-            glfwGetCursorPos(Display.getWindow(), x, y);
-            x.rewind();
-            y.rewind();
-
-            nx = (float) x.get();
-            ny = (float) y.get();
-            
-            dx = nx - lockedPos.x;
-            dy = ny - lockedPos.y;
-            
-            glfwSetCursorPos(Display.getWindow(), lockedPos.x, lockedPos.y);
+		} else
+		{
+			glfwGetCursorPos(Display.getWindow(), x, y);
+			x.rewind();
+			y.rewind();
+			
+			nx = (float) x.get();
+			ny = (float) y.get();
+			
+			dx = nx - lockedPos.x;
+			dy = ny - lockedPos.y;
+			
+			glfwSetCursorPos(Display.getWindow(), lockedPos.x, lockedPos.y);
 		}
 	}
 	
 	/**
 	 * Locks the Cursor to the specified position
+	 * 
 	 * @param pos Position to lock to
 	 */
-	static void lockMouse(Vector2f pos) {
-        mouseLocked = true;
-        lockedPos = pos;
-        
-        lx = pos.x;
-        ly = pos.y;
+	static void lockMouse(Vector2f pos)
+	{
+		mouseLocked = true;
+		lockedPos = pos;
+		
+		lx = pos.x;
+		ly = pos.y;
 	}
 	
-	static void setMousePosition(Vector2f pos) {
-        glfwSetCursorPos(Display.getWindow(), pos.x, pos.y);
+	static void setMousePosition(Vector2f pos)
+	{
+		glfwSetCursorPos(Display.getWindow(), pos.x, pos.y);
 	}
 	
 	/**
 	 * Frees the mouse again
 	 */
-	static void freeMouse() {
+	static void freeMouse()
+	{
 		mouseLocked = false;
 	}
-
-	static float getX() {
+	
+	static float getX()
+	{
 		return nx;
 	}
-
-	static float getY() {
+	
+	static float getY()
+	{
 		return ny;
 	}
-
-	static float getDeltaX() {
+	
+	static float getDeltaX()
+	{
 		return dx;
 	}
-
-	static float getDeltaY() {
+	
+	static float getDeltaY()
+	{
 		return dy;
 	}
 }

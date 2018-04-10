@@ -11,7 +11,8 @@ import com.gamewolves.openwolves.entities.Loader;
 import com.gamewolves.openwolves.entities.components.Component;
 import com.gamewolves.openwolves.materials.Material;
 
-public class MeshComponent extends Component {
+public class MeshComponent extends Component
+{
 	
 	private float[] vertices, uvCoords, normals;
 	private int[] indices;
@@ -20,23 +21,20 @@ public class MeshComponent extends Component {
 	
 	public boolean useTexture, useLighting;
 	public Material material;
-
-	public MeshComponent(UUID entity) {
+	
+	public MeshComponent(UUID entity)
+	{
 		super(entity);
 		useTexture = false;
 		useLighting = false;
 		material = Material.baseMaterial;
 	}
-
-	@Override
-	public void update() {
-
-	}
 	
 	/**
 	 * Renders an object to the scene
 	 */
-	public void render() {
+	public void render()
+	{
 		GL30.glBindVertexArray(vaoID);
 		GL20.glEnableVertexAttribArray(0);
 		
@@ -46,7 +44,7 @@ public class MeshComponent extends Component {
 		if (useLighting = true && normals != null)
 			loadNormals();
 		
-		if (useTexture && uvCoords != null) 
+		if (useTexture && uvCoords != null)
 			activateTexture();
 		
 		GL11.glDrawElements(GL11.GL_TRIANGLES, indices.length, GL11.GL_UNSIGNED_INT, 0);
@@ -55,7 +53,8 @@ public class MeshComponent extends Component {
 		if (useTexture && uvCoords != null)
 			unloadTexture();
 		
-		if (useLighting = true && normals != null) {
+		if (useLighting = true && normals != null)
+		{
 			unloadNormals();
 		}
 		
@@ -65,14 +64,16 @@ public class MeshComponent extends Component {
 	/**
 	 * Loads the texture
 	 */
-	private void loadTexture() {
+	private void loadTexture()
+	{
 		GL20.glEnableVertexAttribArray(1);
 	}
 	
 	/**
 	 * Activates the texture
 	 */
-	private void activateTexture() {
+	private void activateTexture()
+	{
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, material.getTexture().getTextureID());
 	}
@@ -80,31 +81,36 @@ public class MeshComponent extends Component {
 	/**
 	 * Unloads the texture
 	 */
-	private void unloadTexture() {
+	private void unloadTexture()
+	{
 		GL20.glDisableVertexAttribArray(1);
 	}
 	
 	/**
 	 * Loads the normals
 	 */
-	private void loadNormals() {
+	private void loadNormals()
+	{
 		GL20.glEnableVertexAttribArray(2);
 	}
 	
 	/**
 	 * Unloads the normals
 	 */
-	private void unloadNormals() {
+	private void unloadNormals()
+	{
 		GL20.glDisableVertexAttribArray(2);
 	}
 	
 	/**
 	 * Creates a VAO with the given values
+	 * 
 	 * @param vertices The vertices of the object
 	 * @param indices The indices of the object
 	 * @param uvCoords The uv coordinates of the object
 	 */
-	public void loadMesh(float[] vertices, int[] indices, float[] uvCoords) {
+	public void loadMesh(float[] vertices, int[] indices, float[] uvCoords)
+	{
 		this.vertices = vertices;
 		this.indices = indices;
 		this.uvCoords = uvCoords;
@@ -114,10 +120,12 @@ public class MeshComponent extends Component {
 	
 	/**
 	 * Creates a VAO with the given values
+	 * 
 	 * @param vertices The vertices of the object
 	 * @param indices The indices of the object
 	 */
-	public void loadMesh(float[] vertices, int[] indices) {
+	public void loadMesh(float[] vertices, int[] indices)
+	{
 		this.vertices = vertices;
 		this.indices = indices;
 		Loader.deleteVAO(vaoID);
@@ -125,12 +133,15 @@ public class MeshComponent extends Component {
 	}
 	
 	/**
-	 * Recreates the VAO with the new uv coordinates
-	 * @param uvCoords The uv coordinates of the object
+	 * Recreates the VAO with the new UV coordinates
+	 * 
+	 * @param uvCoords The UV coordinates of the object
 	 */
-	public void loadUV(float[] uvCoords) {
+	public void loadUV(float[] uvCoords)
+	{
 		this.uvCoords = uvCoords;
-		if (vertices == null || indices == null) throw new IllegalStateException("Load vertices and indices first");
+		if (vertices == null || indices == null)
+			throw new IllegalStateException("Load vertices and indices first");
 		Loader.deleteVAO(vaoID);
 		if (normals != null)
 			vaoID = Loader.loadVAO_VITN(vertices, indices, uvCoords, normals);
@@ -138,24 +149,27 @@ public class MeshComponent extends Component {
 			vaoID = Loader.loadVAO_VIT(vertices, indices, uvCoords);
 	}
 	
-	public void loadNormals(float[] normals) {
+	/**
+	 * Recreates the VAO with the new normals
+	 * 
+	 * @param normals The new normals
+	 */
+	public void loadNormals(float[] normals)
+	{
 		this.normals = normals;
-		if (vertices == null || indices == null) throw new IllegalStateException("Load vertices and indices first");
+		if (vertices == null || indices == null)
+			throw new IllegalStateException("Load vertices and indices first");
 		Loader.deleteVAO(vaoID);
 		if (uvCoords != null)
 			vaoID = Loader.loadVAO_VITN(vertices, indices, uvCoords, normals);
 		else
 			vaoID = Loader.loadVAO_VIN(vertices, indices, normals);
 	}
-
+	
 	@Override
-	public void lateUpdate() {
-
+	public void delete()
+	{
+		Loader.deleteVAO(vaoID);
 	}
-
-	@Override
-	public void delete() {
-
-	}
-
+	
 }

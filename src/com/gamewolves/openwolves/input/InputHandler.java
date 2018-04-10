@@ -9,51 +9,66 @@ import org.joml.Vector2f;
 
 import com.gamewolves.openwolves.gl.Display;
 
-public class InputHandler{
+public class InputHandler
+{
 	
-	public static void init() {
+	/**
+	 * Sets the callbacks for the input types
+	 */
+	public static void init()
+	{
 		glfwSetKeyCallback(Display.getWindow(), new KeyboardHandler());
 		glfwSetScrollCallback(Display.getWindow(), new ScrollHandler());
 	}
 	
-	public static void update() {
+	public static void update()
+	{
 		ScrollHandler.update();
 		MouseHandler.update();
 	}
 	
-	public static float getDeltaScroll() {
+	public static float getDeltaScroll()
+	{
 		return ScrollHandler.getDeltaY();
 	}
-
-	public static boolean isKeyDown(int keyCode) {
-		  return KeyboardHandler.isKeyDown(keyCode);
+	
+	public static boolean isKeyDown(int keyCode)
+	{
+		return KeyboardHandler.isKeyDown(keyCode);
 	}
 	
-	public static boolean isButtonDown(int keyCode) {
+	public static boolean isButtonDown(int keyCode)
+	{
 		return glfwGetMouseButton(Display.getWindow(), keyCode) == GLFW_PRESS;
 	}
 	
-	public static boolean isButtonUp(int keyCode) {
+	public static boolean isButtonUp(int keyCode)
+	{
 		return glfwGetMouseButton(Display.getWindow(), keyCode) != GLFW_PRESS;
 	}
 	
-	public static Vector2f getDeltaPosition() {
+	public static Vector2f getDeltaPosition()
+	{
 		return new Vector2f(MouseHandler.getDeltaX(), MouseHandler.getDeltaY());
 	}
 	
-	public static Vector2f getMousePosition() {
+	public static Vector2f getMousePosition()
+	{
 		return new Vector2f(MouseHandler.getX(), MouseHandler.getY());
 	}
 	
-	public static void setMousePosition(Vector2f pos) {
+	public static void setMousePosition(Vector2f pos)
+	{
 		MouseHandler.setMousePosition(pos);
 	}
 	
-	public static void lockMouse(Vector2f pos) {
+	public static void lockMouse(Vector2f pos)
+	{
 		MouseHandler.lockMouse(pos);
 	}
 	
-	public static void freeMouse() {
+	public static void freeMouse()
+	{
 		MouseHandler.freeMouse();
 	}
 }
